@@ -2,6 +2,11 @@
   <component name="FindRecents">
     <findStrings>
       <find>getIt</find>
+      <find>url.op</find>
+      <find>protected void onCreate(Bundle savedInstanceState) {</find>
+      <find>nav_</find>
+      <find>nav_header</find>
+      <find>list</find>
     </findStrings>
   </component>
 </application>
