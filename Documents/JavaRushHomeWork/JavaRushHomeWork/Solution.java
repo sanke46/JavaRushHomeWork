@@ -20,7 +20,7 @@ public class Solution {
         String name = reader.readLine();
         reader.close();
 
-        HashMap<Integer, Integer> MapArr = new HashMap<Integer, Integer>();
+        HashMap<Integer, Integer> hitsMap = new HashMap<Integer, Integer>();
         ArrayList<Integer> arr = new ArrayList<Integer>();
 
         FileInputStream file = new FileInputStream(name);
@@ -31,15 +31,15 @@ public class Solution {
             if (tmp < min){
                 min = tmp;
             }
-            if(MapArr.containsKey(tmp)){
-                int value = MapArr.get(tmp) + 1;
-                MapArr.put(tmp, value);
+            if(hitsMap.containsKey(tmp)){
+                int value = hitsMap.get(tmp) + 1;
+                hitsMap.put(tmp, value);
             } else {
-                MapArr.put(tmp,1);
+                hitsMap.put(tmp,1);
             }
         }
 
-        for (HashMap.Entry<Integer,Integer> pair : MapArr.entrySet()){
+        for (HashMap.Entry<Integer,Integer> pair : hitsMap.entrySet()){
             if(pair.getValue().equals(min)){
                 if(!arr.contains(pair.getValue())){
                     arr.add(pair.getKey());
