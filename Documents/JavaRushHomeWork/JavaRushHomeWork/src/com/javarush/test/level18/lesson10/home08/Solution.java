@@ -1,8 +1,11 @@
 package com.javarush.test.level18.lesson10.home08;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 /* Нити и байты
 Читайте с консоли имена файлов, пока не будет введено слово "exit"
@@ -15,64 +18,57 @@ import java.util.Map;
 public class Solution {
     public static Map<String, Integer> resultMap = new HashMap<String, Integer>();
 
-    public static void main(String[] args) throws IOException
-    {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        while (true){
-            String fileName = reader.readLine();
-            if(fileName.equals("exit")){
-                break;
-            }
-            new ReadThread(fileName);
+    public static void main(String[] args) throws IOException {
+        Scanner sc = new Scanner(System.in);
+
+        for (String fileName = sc.nextLine(); !fileName.equals("exit"); fileName = sc.nextLine()) {
+            Thread th = new ReadThread(fileName);
+            th.start();
+            try {
+                th.join();
+            }catch (Exception e) {}
         }
 
+        sc.close();
     }
 
     public static class ReadThread extends Thread {
-        String fileName;
+        private String fileName;
+
         public ReadThread(String fileName) {
             //implement constructor body
             this.fileName = fileName;
-        }
 
+        }
         // implement file reading here - реализуйте чтение из файла тут
+
         @Override
-        public void run(){
+        public void run() {
             try {
                 Map<Integer,Integer> hitsMap = new HashMap<Integer, Integer>();
                 FileInputStream file = new FileInputStream(fileName);
-                byte[] fileBytes = new byte[file.available()];
                 int max = 0;
-                int byteName = 0;
+                int charOfMax = 0;
 
                 while (file.available() > 0){
-                    file.read(fileBytes);
-                }
-
-                for (int i = 0; i < fileBytes.length; i++) {
-                    int byteNumber = fileBytes[i];
-                    if(hitsMap.containsKey(fileBytes[i])){
-                        int hit = hitsMap.get(i) + 1;
-                        hitsMap.put(byteNumber, hit);
+                    int a = file.read();
+                    if(hitsMap.containsKey(a)){
+                        int hit = hitsMap.get(a) + 1;
+                        hitsMap.put(a,hit);
+                        if(hit > max){
+                            max = hit;
+                            charOfMax = a;
+                        }
                     } else {
-                        hitsMap.put(byteNumber, 1);
+                        hitsMap.put(a,1);
                     }
                 }
 
-                for(Map.Entry<Integer,Integer> pair : hitsMap.entrySet()){
-                    if(pair.getValue() > max){
-                        max = pair.getValue();
-                        byteName = pair.getKey();
-                    }
-                }
+                resultMap.put(fileName,charOfMax);
+                file.close();
 
-                if(hitsMap.containsValue(max)){
-                    resultMap.put(fileName, byteName);
-                }
-
-
-            } catch (IOException e){
-                e.printStackTrace();
+            } catch (IOException ignore) {
+                ignore.printStackTrace();
             }
         }
     }
