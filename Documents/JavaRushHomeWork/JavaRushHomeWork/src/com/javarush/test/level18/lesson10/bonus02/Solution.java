@@ -22,24 +22,74 @@ id productName price quantity
 19847983Куртка для сноубордистов, разм10173.991234
 */
 
-import java.io.BufferedReader;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class Solution {
     public static void main(String[] args) throws Exception {
 
+        // read file name
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String fileName =  reader.readLine();
-        FileOutputStream fileOut = new FileOutputStream(fileName);
+        reader.close();
 
         if(args[0].equals("-c")){
 
-            String name = args[1];
-            String price = args[2];
-            String quantity = args[3];
+            // all atreebutes
+            String id = getId(fileName);
+            String name = addSapce(args[1],30);
+            String price = addSapce(args[2],8);
+            String quantity = addSapce(args[3],4);
 
+            // write file
+            BufferedWriter fileOut = new BufferedWriter(new FileWriter(fileName,true));
+
+            fileOut.write(id+name+price+quantity);
+            fileOut.newLine();
+            fileOut.close();
 
         }
     }
+
+    // method generat new id
+    private static String getId(String fileName) throws IOException {
+        BufferedReader readerFile = new BufferedReader(new FileReader(fileName));
+        int max = 0;
+
+        while (readerFile.ready()) {
+            String itrLine = readerFile.readLine();
+
+            String itrIdstr = itrLine.substring(0, 8).replaceAll(" ","");
+            int itrId = Integer.parseInt(itrIdstr);
+
+            if (itrId > max) {
+                max = itrId;
+            }
+        }
+
+        readerFile.close();
+        return String.valueOf(max+1);
+    }
+
+
+    // method to add space in args
+    private static String addSapce(String strArg, int number) {
+
+        char[] charArray = strArg.toCharArray();
+        String resultString = strArg;
+
+        if(charArray.length <= number) {
+            for (int i = 0; i < (number - charArray.length); i++) {
+                resultString += " ";
+            }
+        } else {
+            for (int i = 0; i < number ; i++) {
+                resultString += String.valueOf(charArray[i]);
+            }
+        }
+
+
+        return resultString;
+    }
+
+
 }
