@@ -25,6 +25,8 @@ id productName price quantity
 */
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Solution {
     public static void main(String[] args) throws IOException {
@@ -46,21 +48,47 @@ public class Solution {
             fileWriter.close();
 
         } else if(args[0].equals("-d")){
+            List<String> list = setListById(getList(fileName),args[1]);
 
-            String findId = args[1];
-            BufferedReader fileReader = new BufferedReader(new FileReader(fileName));
-
-            while (fileReader.ready()){
-                String itrLine = fileReader.readLine();
-                if(itrLine.contains(findId)){
-
-                    break;
-                }
+            for (int i = 0; i < list.size() ; i++) {
+                System.out.println(list.get(i));
             }
 
+            BufferedWriter fileWriter = new BufferedWriter(new FileWriter(fileName));
+            for(String list2 : list){
+                fileWriter.write(list2);
+                fileWriter.newLine();
+            }
+            fileWriter.close();
         }
+    }
+
+    private static List<String> getList(String fileName) throws IOException {
+        List<String> list = new ArrayList<String>();
+        BufferedReader fileReader = new BufferedReader(new FileReader(fileName));
+        while(fileReader.ready()){
+            String readLine = fileReader.readLine();
+            list.add(readLine);
+        }
+        fileReader.close();
+        return list;
 
     }
+
+    private static List<String> setListById(List<String> arr, String id){
+
+        String byId = setSpace(id,8);
+
+        List<String> list = arr;
+        for (int i = 0; i < list.size(); i++){
+            if(list.get(i).substring(0,8).equals(byId)){
+                list.remove(list.get(i));
+            }
+        }
+        return list;
+    }
+
+
 
     private static String getId(String fileName) throws IOException
     {
